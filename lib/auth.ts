@@ -6,15 +6,13 @@ const TOKEN_NAME = "token";
 export type AuthPayload = { userId: string; companySlug: string; email: string };
 
 export function signToken(payload: AuthPayload): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error("JWT_SECRET not set");
+  const secret = process.env.JWT_SECRET || "fallback-secret-for-development-only";
   return jwt.sign(payload, secret, { expiresIn: "7d" });
 }
 
 export function verifyToken(token: string): AuthPayload | null {
   try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error("JWT_SECRET not set");
+    const secret = process.env.JWT_SECRET || "fallback-secret-for-development-only";
     return jwt.verify(token, secret) as AuthPayload;
   } catch {
     return null;

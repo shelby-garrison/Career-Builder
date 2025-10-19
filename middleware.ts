@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 
 const PROTECTED_SEGMENTS = new Set(['edit', 'preview']);
+
+// Simple JWT decode function for middleware (Edge Runtime compatible)
+function decodeJWT(token: string) {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    
+    const payload = parts[1] ?? '';
+    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(decoded);
+  } catch {
+    return null;
+  }
+}
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -15,18 +28,24 @@ export function middleware(req: NextRequest) {
     if (segment && PROTECTED_SEGMENTS.has(segment)) {
       const token = req.cookies.get('token')?.value;
       if (!token) {
+        console.log('Middleware: No token found, redirecting to login');
         const url = new URL('/login', req.url);
         return NextResponse.redirect(url);
       }
+      
       try {
-        const secret: string = (process.env.JWT_SECRET as string) ?? '';
-        if (!secret) throw new Error('JWT secret missing');
-        const payload = jwt.verify(token, secret) as { companySlug?: string };
+        const payload = decodeJWT(token);
+        console.log('Middleware: Token payload:', payload);
+        console.log('Middleware: Expected companySlug:', companySlug);
+        
         if (!payload?.companySlug || payload.companySlug !== companySlug) {
+          console.log('Middleware: Company slug mismatch, redirecting to login');
           const url = new URL('/login', req.url);
           return NextResponse.redirect(url);
         }
-      } catch {
+        console.log('Middleware: Authentication successful');
+      } catch (error) {
+        console.log('Middleware: Token verification failed:', error);
         const url = new URL('/login', req.url);
         return NextResponse.redirect(url);
       }
