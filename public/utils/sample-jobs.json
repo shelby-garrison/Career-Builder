@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Senior Software Engineer",
+    "department": "Engineering",
+    "location": "San Francisco, CA",
+    "type": "Full-time",
+    "description": "Build scalable systems powering our products.",
+    "applyUrl": "https://example.com/apply/1",
+    "remote": true,
+    "tags": ["Node.js", "React", "AWS"]
+  },
+  {
+    "title": "Product Designer",
+    "department": "Design",
+    "location": "Remote",
+    "type": "Full-time",
+    "description": "Design delightful user experiences.",
+    "applyUrl": "https://example.com/apply/2",
+    "remote": true,
+    "tags": ["Figma", "UX", "UI"]
+  },
+  {
+    "title": "People Operations Manager",
+    "department": "People",
+    "location": "London, UK",
+    "type": "Full-time",
+    "description": "Support our growing team and culture.",
+    "applyUrl": "https://example.com/apply/3",
+    "remote": false,
+    "tags": ["HR", "Operations"]
+  }
+]
